@@ -37,10 +37,11 @@ connection.query("SELECT * FROM Products", function(err, data){
 
 });
 
-prompt.start();
+
 
 function start(){
 	console.log('Please enter the product ID and and amount when prompted below');
+	prompt.start();
 	prompt.get(['ID', 'AMT'], function (err, result) {
 		if (err) throw err;
 		var itemID = result.ID;
