@@ -1,0 +1,27 @@
+{
+  "name": "week-12-mysql-bamazon",
+  "version": "1.0.0",
+  "description": "Amazon-like storefront app",
+  "main": "BamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Perijet/week-12-mySQL-Bamazon.git"
+  },
+  "keywords": [
+    "Bamazon"
+  ],
+  "author": "Nigel John",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Perijet/week-12-mySQL-Bamazon/issues"
+  },
+  "homepage": "https://github.com/Perijet/week-12-mySQL-Bamazon#readme",
+  "dependencies": {
+    "inquirer": "^1.0.3",
+    "mysql": "^2.11.1",
+    "prompt": "^1.0.0"
+  }
+}
