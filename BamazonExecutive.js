@@ -19,3 +19,47 @@ connection.connect(function(err){
 	console.log('Please Select one of the options below!');
 	console.log('============================================'+ '\n\n');
 });
+
+function start(){
+
+inquirer.prompt([
+
+	{
+        type: "list",
+        message: "Please Select one of the options below",
+        choices: ["View Products Sale by Department", "Create New Department"],
+        name: "bamazon"
+    }
+
+ 
+
+
+	]).then(function (answer) {
+
+//console.log(answer.bamazon);
+
+var choice = answer.bamazon;
+
+switch (choice){
+	case "View_Products_for_Sale":
+	productSales();
+	break;
+
+	case "Create New Department":
+	newDepartment();
+	break;
+
+	default:
+	console.log('choose');
+}
+});
+}
+start();
+
+function productSales(){
+
+}
+
+function newDepartment(){
+
+}
