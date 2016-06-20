@@ -20,7 +20,7 @@ console.log('connected as id' + connection.threadId + '\n');
 console.log('============================================');
 console.log('  Welcome to The Bamazon Manager App!');
 //console.log('Please Select one of the options below!');
-console.log('============================================'+ '\n\n');
+console.log('============================================');
 
 function start(){
 
@@ -77,9 +77,6 @@ function viewProducts(){
 	console.log('============================================');
 
 	productView();
-
-	
-	
 }
 
 function viewInventory(){
@@ -111,7 +108,7 @@ function addInventory(){
 	console.log('Please follow prompt below to add to existing items');
 	console.log('===================================================');
 
-	productView();
+	//productView();
 
 	inquirer.prompt([
 
@@ -159,36 +156,24 @@ function addInventory(){
 		});
 }
 
-function addProduct(){
+// function addProduct(){
 		
-	console.log('\n');
-	console.log('============================================');
-	console.log('            Welcome to Bamazon!');
-	console.log('Below is a list of items available for sale!');
-	console.log('============================================'+ '\n');
+// 	console.log('\n');
+// 	console.log('============================================');
+// 	console.log('            Welcome to Bamazon!');
+// 	console.log('Below is a list of items available for sale!');
+// 	console.log('============================================'+ '\n');
 
-	connection.query("SELECT * FROM Products", function(err, data){
-		if (err) throw err;
+// 	connection.query("SELECT * FROM Products", function(err, data){
+// 		if (err) throw err;
 
-		for(var i = 0; i < data.length; i++){
-			console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
-		}
-		console.log('\n');
+// 		for(var i = 0; i < data.length; i++){
+// 			console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
+// 		}
+// 		console.log('\n');
 
-	});
-}
-
-function productView(){
-	connection.query("SELECT * FROM Products", function(err, data){
-		if (err) throw err;
-
-		for(var i = 0; i < data.length; i++){
-			console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
-		}
-		console.log('\n');
-
-	});
-}
+// 	});
+// }
 
 
 function addProduct(){
@@ -225,10 +210,7 @@ inquirer.prompt([
 		]).then(function (answers) {
 			update();
 
-		var product = answers.pName;
-		var department = answers.dName;
-		var cost = answers.price;
-		var quantity = answers.AMT;
+		console.log('\n');
 
 		console.log(product);
 		console.log(department);
@@ -238,21 +220,38 @@ inquirer.prompt([
 		console.log(product + ", " + department + ", " + cost + ", " + quantity);
 
 		function update(){
-			connection.query("INSERT INTO Products(ProductName, DepartmentName, Price, StockQuantity) VALUES(" + product + ", " + department + ", " + cost + ", " + quantity+ ")", function(err, data){
+		var product = answers.pName;
+		var department = answers.dName;
+		var cost = answers.price;
+		var quantity = answers.AMT;
+
+			connection.query('INSERT INTO Products(ProductName, DepartmentName, Price, StockQuantity) VALUES( "'  + product + '", "' + department + '", ' + cost + ', ' + quantity+ ')', function(err, data){
 				if (err) throw err;
 
-				// for(var i = 0; i < data.length; i++){
-				// 	console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
-				// }
+				for(var i = 0; i < data.length; i++){
+					console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
+				}
 				console.log('\n');
 
 			});
+			restart();
 }
 });
 
 }
 
 
+function productView(){
+	connection.query("SELECT * FROM Products", function(err, data){
+		if (err) throw err;
+
+		for(var i = 0; i < data.length; i++){
+			console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
+		}
+		console.log('\n');
+
+	});
+}
 
 
 function restart(){
