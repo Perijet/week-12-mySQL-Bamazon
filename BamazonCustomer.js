@@ -9,6 +9,7 @@ var connection = mysql.createConnection({
 	database: 'Bamazon'
 });
 
+//Establishing connection with the Bamazon database
 connection.connect(function(err){
 
 	if (err) throw err;
@@ -24,6 +25,7 @@ connection.connect(function(err){
 
 });
 
+//After connection established running first query to display store products
 connection.query("SELECT * FROM Products", function(err, data){
 	if (err) throw err;
 
@@ -33,6 +35,7 @@ connection.query("SELECT * FROM Products", function(err, data){
 	}
 	console.log('\n');
 
+//Function to check store quantities and if enough stock allow user to purchase product and update the database quantity
 	function start(){
 		console.log('Please enter the product ID and and amount when prompted below');
 		prompt.start();
@@ -64,6 +67,7 @@ connection.query("SELECT * FROM Products", function(err, data){
 				
 				else if(Amount < stock){
 
+//Displays the users order and provides the total cost of items purchased
 					console.log('\n' );
 					console.log('*********************'); 
 					console.log('Your order details'); 
@@ -79,12 +83,15 @@ connection.query("SELECT * FROM Products", function(err, data){
 					console.log('\n' );
 					start();
 
+//Connection to update the Products database after purchase is successful
 					connection.query('UPDATE Products SET StockQuantity=StockQuantity+' + Amount + ' ' + 'WHERE ItemID =' + itemID , function(err, data){
 						if (err) throw err;
 
 					});
 
 				}else{
+
+//If there is insufficent quantities in stock message is displayed an the prompt is displayed to allow user to modify request					
 					console.log("Insufficient quantity");
 					restart();
 
@@ -104,6 +111,7 @@ start();
 
 });
 
+//Restart function to allow the prompts to loop in the program until the user manually quits
 var restart = function(){
 	start();
 };

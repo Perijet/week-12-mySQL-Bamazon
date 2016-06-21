@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
 	database: 'Bamazon'
 });
 
-
+//Establishing connection with the Bamazon database
 connection.connect(function(err){
 	if (err) throw err;
 });
@@ -20,6 +20,7 @@ console.log(' Welcome to The Bamazon Executive App!');
 console.log('Please Select one of the options below!');
 console.log('============================================'+ '\n\n');
 
+//Function that starts the program and prompts the user for input based on four choices
 function start(){
 
 	inquirer.prompt([
@@ -53,12 +54,14 @@ function start(){
 }
 start();
 
+//// function that displays product sales options to the executive in a summarized table
 function productSales(){
 	console.log('');
 	console.log('____________________________________________________________________________________');
 	console.log('DepartmentID\t', 'DepartmentName\t\t', 'OverHeadCosts\t', 'ProductSales\t', 'TotalProfit');
 	console.log('____________________________________________________________________________________');
 
+//Query to the database that returns custom fields based on a JOIN and custom ALIAS for ProductSales and TortalProfit
 	connection.query("SELECT t1.DepartmentID, t2.DepartmentName, t1.OverHeadCosts, t1.TotalSales AS ProductSales, OverheadCosts - TotalSales AS TotalProfit FROM Departments t1 INNER JOIN Products t2 ON t1.DepartmentName = t2.DepartmentName GROUP BY DepartmentID;", function(err, data){
 		if (err) throw err;
 
@@ -72,6 +75,7 @@ function productSales(){
 
 }
 
+//Function to allow executive to add a new department to the existing Departments database
 function newDepartment(){
 
 	console.log('');
@@ -79,6 +83,7 @@ function newDepartment(){
 	console.log('DepartmentID\t', 'DepartmentName\t\t', 'OverHeadCosts\t', 'ProductSales\t', 'TotalProfit');
 	console.log('____________________________________________________________________________________');
 
+//Query to displat the existing executive view for reference
 	connection.query("SELECT t1.DepartmentID, t2.DepartmentName, t1.OverHeadCosts, t1.TotalSales AS ProductSales, OverheadCosts - TotalSales AS TotalProfit FROM Departments t1 INNER JOIN Products t2 ON t1.DepartmentName = t2.DepartmentName GROUP BY DepartmentID;", function(err, data){
 		if (err) throw err;
 
@@ -87,7 +92,7 @@ function newDepartment(){
 		}
 		console.log('\n');
 	
-
+//Prompts the user for information needed to add the new department
 	inquirer.prompt([
 
 		{
@@ -116,6 +121,7 @@ function newDepartment(){
 			var overhead = answers.oCosts;
 			var sales = answers.tSales;
 
+//Query based on input from above used to update the Departments table with a new department
 			connection.query('INSERT INTO Departments(DepartmentName, OverHeadCosts, TotalSales) VALUES( "'  + department + '", "' + overhead + '", ' + sales + ')', function(err, data){
 				if (err) throw err;
 

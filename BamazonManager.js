@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
 	database: 'Bamazon'
 });
 
-
+//Establishing connection with the Bamazon database
 connection.connect(function(err){
 	if (err) throw err;
 });
@@ -19,6 +19,7 @@ console.log('============================================');
 console.log('  Welcome to The Bamazon Manager App!');
 console.log('============================================');
 
+//Function that starts the program and prompts the user for input based on four choices
 function start(){
 
 inquirer.prompt([
@@ -57,8 +58,10 @@ inquirer.prompt([
 	});
 }
 
+//Invoking the start function
 start();
 
+// function that displays items available for sale based on users input from start function
 function viewProducts(){
 
 	console.log('\n');
@@ -69,6 +72,7 @@ function viewProducts(){
 	console.log('ID\t', 'Product\t\t', 'Price\t', 'Quantity');
 	console.log('___________________________________________________ \n');
 
+//Query the Products database and display items available for sale
 	connection.query("SELECT * FROM Products", function(err, data){
 		if (err) throw err;
 
@@ -81,6 +85,7 @@ function viewProducts(){
 	
 }
 
+//Function to select only items in the database with a quantity lower than 5
 function viewInventory(){
 
 	console.log('\n');
@@ -91,6 +96,7 @@ function viewInventory(){
 	console.log('ID\t', 'Product\t\t', 'Price\t', 'Quantity');
 	console.log('___________________________________________________ \n');
 
+//Database query to select only products with a quantity less than 5
 	connection.query("SELECT * FROM Products WHERE StockQuantity < 5", function(err, data){
 		if (err) throw err;
 
@@ -103,6 +109,7 @@ function viewInventory(){
 
 }
 
+//Function to allow user to add to existing inventory items
 function addInventory(){
 
 	console.log('\n');
@@ -113,6 +120,7 @@ function addInventory(){
 	console.log('ID\t', 'Product\t\t', 'Price\t', 'Quantity');
 	console.log('___________________________________________________ \n');
 
+//Query to database to display all items so the user hasv a reference for selection
 	connection.query("SELECT * FROM Products", function(err, data){
 		if (err) throw err;
 
@@ -121,6 +129,7 @@ function addInventory(){
 		}
 		console.log('\n');
 
+//Prompts the user for input to update the database
 	inquirer.prompt([
 
 		{
@@ -147,11 +156,13 @@ function addInventory(){
 				console.log(Amount);
 				console.log(itemID);
 
+//Based on user input the query updates the selected item in the database
 				connection.query('UPDATE Products SET StockQuantity=StockQuantity+' + Amount + ' ' + 'WHERE ItemID =' + itemID , function(err, data){
 					if (err) throw err;
 
 				});
 
+//Query to select the updated item and show the user that the item was updated
 				connection.query("SELECT * FROM Products WHERE ItemID =" + itemID, function(err, data){
 					if (err) throw err;
 
@@ -168,6 +179,7 @@ function addInventory(){
 	});
 }
 
+//Function that allows the user to add additional products to the database
 function addProduct(){
 	console.log('\n');
 	console.log('============================================');
@@ -177,6 +189,7 @@ function addProduct(){
 	console.log('ID\t', 'Product\t\t', 'Price\t', 'Quantity');
 	console.log('___________________________________________________ \n');
 
+//Initial database query to show current items in stock
 	connection.query("SELECT * FROM Products", function(err, data){
 		if (err) throw err;
 
@@ -185,6 +198,7 @@ function addProduct(){
 		}
 		console.log('\n');
 
+//Prompts the user for input to add items to the database
 	inquirer.prompt([
 
 		{
@@ -231,12 +245,15 @@ function addProduct(){
 				var cost = answers.price;
 				var quantity = answers.AMT;
 
+//Query updates the database and adds the new item 
 				connection.query('INSERT INTO Products(ProductName, DepartmentName, Price, StockQuantity) VALUES( "'  + product + '", "' + department + '", ' + cost + ', ' + quantity+ ')', function(err, data){
 					if (err) throw err;
 
 					for(var i = 0; i < data.length; i++){
 						console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
 					}
+
+//Restart allows the prompt to repeat for multiple entries only ends when the user manually exits
 					console.log('\n');
 					restart();
 				});
@@ -246,13 +263,6 @@ function addProduct(){
 
 	});
 }
-
-
-
-function productView(){
-	
-}
-
 
 function restart(){
 	start();
