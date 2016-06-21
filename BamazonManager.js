@@ -11,15 +11,12 @@ var connection = mysql.createConnection({
 
 
 connection.connect(function(err){
-
 	if (err) throw err;
-
 });
 
 console.log('connected as id' + connection.threadId + '\n');
 console.log('============================================');
 console.log('  Welcome to The Bamazon Manager App!');
-//console.log('Please Select one of the options below!');
 console.log('============================================');
 
 function start(){
@@ -33,69 +30,75 @@ inquirer.prompt([
         name: "bamazon"
     }
 
- 
-
-
 	]).then(function (answer) {
 
-//console.log(answer.bamazon);
+	var choice = answer.bamazon;
 
-var choice = answer.bamazon;
+	switch (choice){
+		case "View Products for Sale":
+		viewProducts();
+		break;
 
-switch (choice){
-	case "View Products for Sale":
-	viewProducts();
-	break;
+		case "View Low Inventory":
+		viewInventory();
+		break;
 
-	case "View Low Inventory":
-	viewInventory();
-	break;
+		case "Add to Inventory":
+		addInventory();
+		break;
 
-	case "Add to Inventory":
-	addInventory();
-	break;
+		case "Add New Product":
+		addProduct();
+		break;
 
-	case "Add New Product":
-	addProduct();
-	break;
-
-	default:
-	console.log('choose');
+		default:
+		console.log('choose');
+	}
+	});
 }
-});
-}
+
 start();
-//console.log(choice);
 
 function viewProducts(){
-
 
 	console.log('\n');
 	console.log('============================================');
 	console.log('            Welcome to Bamazon!');
 	console.log('Below is a list of items available for sale!');
-	console.log('============================================');
+	console.log('============================================\n\n');
+	console.log('ID\t', 'Product\t\t', 'Price\t', 'Quantity');
+	console.log('___________________________________________________ \n');
 
-	productView();
+	connection.query("SELECT * FROM Products", function(err, data){
+		if (err) throw err;
+
+		for(var i = 0; i < data.length; i++){
+			console.log(data[i].ItemID + " \t " + data[i].ProductName + " \t\t " + "$"+ data[i].Price+ " \t " +data[i].StockQuantity);
+		}
+		console.log('\n');
+		start();
+	});
+	
 }
 
 function viewInventory(){
 
-		
 	console.log('\n');
 	console.log('========================================');
 	console.log('         Welcome to Bamazon!');
 	console.log('Below is a list of low inventory items!');
-	console.log('========================================');
+	console.log('========================================\n\n');
+	console.log('ID\t', 'Product\t\t', 'Price\t', 'Quantity');
+	console.log('___________________________________________________ \n');
 
 	connection.query("SELECT * FROM Products WHERE StockQuantity < 5", function(err, data){
 		if (err) throw err;
 
 		for(var i = 0; i < data.length; i++){
-			console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
+			console.log(data[i].ItemID + " \t " + data[i].ProductName + " \t\t " + "$"+ data[i].Price+ " \t " +data[i].StockQuantity);
 		}
-		console.log('\n');
-
+		console.log('\n\n');
+		start();
 	});
 
 }
@@ -106,9 +109,17 @@ function addInventory(){
 	console.log('===================================================');
 	console.log('               Welcome to Bamazon!');
 	console.log('Please follow prompt below to add to existing items');
-	console.log('===================================================');
+	console.log('===================================================\n\n');
+	console.log('ID\t', 'Product\t\t', 'Price\t', 'Quantity');
+	console.log('___________________________________________________ \n');
 
-	//productView();
+	connection.query("SELECT * FROM Products", function(err, data){
+		if (err) throw err;
+
+		for(var i = 0; i < data.length; i++){
+			console.log(data[i].ItemID + " \t " + data[i].ProductName + " \t\t " + "$"+ data[i].Price+ " \t " +data[i].StockQuantity);
+		}
+		console.log('\n');
 
 	inquirer.prompt([
 
@@ -126,10 +137,9 @@ function addInventory(){
 
 
 
-		]).then(function (answers) {
+		]).then(function (answers){
 
-		
-		update();
+			update();
 
 			function update(){
 				var Amount = answers.AMT;
@@ -138,48 +148,44 @@ function addInventory(){
 				console.log(itemID);
 
 				connection.query('UPDATE Products SET StockQuantity=StockQuantity+' + Amount + ' ' + 'WHERE ItemID =' + itemID , function(err, data){
-				if (err) throw err;
+					if (err) throw err;
 
 				});
 
 				connection.query("SELECT * FROM Products WHERE ItemID =" + itemID, function(err, data){
-				if (err) throw err;
+					if (err) throw err;
 
 				for(var i = 0; i < data.length; i++){
-					console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
+					console.log(data[i].ItemID + " \t " + data[i].ProductName + " \t\t " + "$"+ data[i].Price+ " \t " +data[i].StockQuantity);
 				}
-				console.log('\n');
+				console.log('\n\n\n');
+				start();
 				});
 			}
 			
 
 		});
+	});
 }
 
-// function addProduct(){
-		
-// 	console.log('\n');
-// 	console.log('============================================');
-// 	console.log('            Welcome to Bamazon!');
-// 	console.log('Below is a list of items available for sale!');
-// 	console.log('============================================'+ '\n');
-
-// 	connection.query("SELECT * FROM Products", function(err, data){
-// 		if (err) throw err;
-
-// 		for(var i = 0; i < data.length; i++){
-// 			console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
-// 		}
-// 		console.log('\n');
-
-// 	});
-// }
-
-
 function addProduct(){
+	console.log('\n');
+	console.log('============================================');
+	console.log('            Welcome to Bamazon!');
+	console.log('Below is a list of items available for sale!');
+	console.log('============================================'+ '\n\n');
+	console.log('ID\t', 'Product\t\t', 'Price\t', 'Quantity');
+	console.log('___________________________________________________ \n');
 
+	connection.query("SELECT * FROM Products", function(err, data){
+		if (err) throw err;
 
-inquirer.prompt([
+		for(var i = 0; i < data.length; i++){
+			console.log(data[i].ItemID + " \t " + data[i].ProductName + " \t\t " + "$"+ data[i].Price+ " \t " +data[i].StockQuantity);
+		}
+		console.log('\n');
+
+	inquirer.prompt([
 
 		{
 	        type: "input",
@@ -210,47 +216,41 @@ inquirer.prompt([
 		]).then(function (answers) {
 			update();
 
-		console.log('\n');
+			console.log('\n');
 
-		console.log(product);
-		console.log(department);
-		console.log(cost);
-		console.log(quantity);
+			console.log(product);
+			console.log(department);
+			console.log(cost);
+			console.log(quantity);
 
-		console.log(product + ", " + department + ", " + cost + ", " + quantity);
+			console.log(product + ", " + department + ", " + cost + ", " + quantity);
 
-		function update(){
-		var product = answers.pName;
-		var department = answers.dName;
-		var cost = answers.price;
-		var quantity = answers.AMT;
+			function update(){
+				var product = answers.pName;
+				var department = answers.dName;
+				var cost = answers.price;
+				var quantity = answers.AMT;
 
-			connection.query('INSERT INTO Products(ProductName, DepartmentName, Price, StockQuantity) VALUES( "'  + product + '", "' + department + '", ' + cost + ', ' + quantity+ ')', function(err, data){
-				if (err) throw err;
+				connection.query('INSERT INTO Products(ProductName, DepartmentName, Price, StockQuantity) VALUES( "'  + product + '", "' + department + '", ' + cost + ', ' + quantity+ ')', function(err, data){
+					if (err) throw err;
 
-				for(var i = 0; i < data.length; i++){
-					console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
-				}
-				console.log('\n');
+					for(var i = 0; i < data.length; i++){
+						console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
+					}
+					console.log('\n');
+					restart();
+				});
+			
+			}
+		});
 
-			});
-			restart();
+	});
 }
-});
 
-}
 
 
 function productView(){
-	connection.query("SELECT * FROM Products", function(err, data){
-		if (err) throw err;
-
-		for(var i = 0; i < data.length; i++){
-			console.log(data[i].ItemID + " | " + data[i].ProductName + " | " + "$"+ data[i].Price+ " | " +data[i].StockQuantity);
-		}
-		console.log('\n');
-
-	});
+	
 }
 
 
