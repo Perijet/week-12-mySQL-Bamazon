@@ -26,4 +26,4 @@ Bamazon is an Amazon-like storefront using MySQL, the MySQL NPM Package, the Inq
 ### DEMO
 The features of the BAMAZON app can be seen in the video attached below.
 
-[Bamazon app demo]()
+[Bamazon app demo](https://youtu.be/6HDIYqXJJVo)
